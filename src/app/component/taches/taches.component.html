@@ -1,0 +1,28 @@
+<div class="container-fluid d-flex justify-content-center">
+    <div class="d-flex flex-column">
+        <div class="bd-highlight d-flex justify-content-center">
+            <h1>Taches</h1>
+            <button class="btn btn-outline-secondary m-1" (click)="loggout()">Logout</button>
+
+        </div>
+        <div class="d-flex flex-row justify-content-center ">
+            <input id="inputAjoutTache" class="saisieInput" type="text" name="tache" placeholder="tache" [(ngModel)]="newTache.titre">
+
+            <button id="buttonAjoutTache" class="btn btn-primary" value="Ajouter" (click)='ajouter()'>Ajouter</button>
+        </div>
+        <div class="d-flex  justify-content-center">
+            <div id="listeTaches" class="d-flex  flex-column">
+                <div class="d-flex justify-content-between m-1" *ngFor="let tache of (taches | filtreTache:filter)">
+                    <input (click)="modifier(tache)" type="checkbox" [(ngModel)]="tache.termine">
+                    <div [ngClass]="tache.termine? 'text-decoration-line-through' : '' ">{{tache.titre}}</div>
+                    <button class="btn btn-outline-danger m-1" (click)='supprimer(tache)'>Supprimer</button>
+                </div>
+            </div>
+        </div>
+        <div class="d-flex flex-row justify-content-center">
+            <button class="btn btn-outline-secondary m-1" (click)="change('Tous')">Tous</button>
+            <button class="btn btn-outline-secondary m-1" (click)="change('Actif')">Actif</button>
+            <button class="btn btn-outline-secondary m-1" (click)="change('Termine')">Terminé</button>
+        </div>
+    </div>
+</div>
