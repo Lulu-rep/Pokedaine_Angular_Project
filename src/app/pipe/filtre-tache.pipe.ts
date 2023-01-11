@@ -11,13 +11,17 @@ export class FiltreTachePipe implements PipeTransform {
       return value;
     }
     switch(filter) {
-      case 'Actif':
-        return value.filter( tache =>  !tache.termine)
+      case '':
+        return value.filter( tache => tache.statut === '')
         break;
-      case 'Termine':
-        return value.filter( tache =>  tache.termine)
-      case 'Tous':
-        return value;
+      case 'en cours':
+        return value.filter( tache =>  tache.statut === 'en cours')
+        break;
+      case 'termine':
+        return value.filter( tache =>  tache.statut === 'termine')
+        break;
+      case 'en attente':
+        return value.filter( tache =>  tache.statut === 'en attente')
         break;
       default:
         return value;
