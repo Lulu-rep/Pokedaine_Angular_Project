@@ -30,18 +30,45 @@ export class TachesComponent implements OnInit {
   
   ngOnInit(): void {
     this.tacheService.getTaches().subscribe({
-      next: (data:Array<Tache>) => { this.taches = data; }
+      next: (data:Array<Tache>) => { this.taches = data; 
+        this.taches.forEach(tache => {
+          if(tache.statut == 'En attente') {
+            this.enAttente.push(tache);
+          }
+          else if(tache.statut == 'En cours') {
+            this.enCours.push(tache);
+          }
+          else if(tache.statut == 'Termine') {
+            this.termine.push(tache);
+          }
+          else {
+            this.undifined.push(tache);
+          }
+        });
+      }
     });
 
   }  
 
-  ajouter(statut:string) {
-    this.newTache.statut = statut;
+  ajouter(type:string) {
+    this.newTache.statut = type;
     this.tacheService.ajoutTaches(this.newTache).subscribe({
       next: (data) => {
         this.taches.push(data);
+        if(type == 'En attente') {
+          this.enAttente.push(data);
+        }
+        else if(type == 'En cours') {
+          this.enCours.push(data);
+        }
+        else if(type == 'Termine') {
+          this.termine.push(data);
+        }
+        else{
+          this.undifined.push(data);
+        }
         this.tacheService.getTaches().subscribe({
-          next: (data:Array<Tache>) => { this.taches = data; }
+          next: (data:Array<Tache>) => { this.taches = data;}
         });
       }
     });
@@ -56,6 +83,10 @@ export class TachesComponent implements OnInit {
     this.tacheService.removeTaches(tache).subscribe({
       next: (data) => {
         this.taches = this.taches.filter(t => tache._id != t._id);
+        this.enAttente = this.enAttente.filter(t => tache._id != t._id);
+        this.enCours = this.enCours.filter(t => tache._id != t._id);
+        this.termine = this.termine.filter(t => tache._id != t._id);
+        this.undifined = this.undifined.filter(t => tache._id != t._id);
       }
     });
 
@@ -91,6 +122,8 @@ export class TachesComponent implements OnInit {
       );
 
       let tache = event.container.data[event.currentIndex];
+      console.log("Statut de départ : ",tache.statut);
+      console.log("Statut d'arrivé : ",event.container.id);
       tache.statut = event.container.id;
       this.tacheService.updateTaches(tache).subscribe({
         next: (data) => {
