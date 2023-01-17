@@ -11,7 +11,7 @@
                     <h2>Undifined</h2>
                     <div class="d-flex flex-row justify-content-center ">
                         <input id="inputAjoutTache" class="saisieInput" type="text" name="tache" placeholder="tache" [(ngModel)]="newTache.titre">
-                        <button id="buttonAjoutTache" class="btn btn-primary" value="Ajouter" (click)='ajouter("")'>Ajouter</button>
+                        <button id="buttonAjoutTache" class="btn btn-primary" value="Ajouter" (click)='ajouter("undifined")'>Ajouter</button>
                     </div>
                     <div class="flex-row col justify-content-center ">
                         <div id="Undifined" [ngClass]="{'isEmpty': undifined.length === 0}" cdkDropList [cdkDropListData]="undifined" class="d-flex  flex-column" (cdkDropListDropped)="drop($event)">
@@ -27,7 +27,7 @@
                     <h2>En attente</h2>
                     <div class="d-flex flex-row justify-content-center ">
                         <input id="inputAjoutTache" class="saisieInput" type="text" name="tache" placeholder="tache" [(ngModel)]="newTache.titre">
-                        <button id="buttonAjoutTache" class="btn btn-primary" value="Ajouter" (click)='ajouter("en attente")'>Ajouter</button>
+                        <button id="buttonAjoutTache" class="btn btn-primary" value="Ajouter" (click)='ajouter("enAttente")'>Ajouter</button>
                     </div>
                     <div class="flex-row col justify-content-center ">
                         <div id="enAttente" [ngClass]="{'isEmpty': enAttente.length === 0}" cdkDropList [cdkDropListData]="enAttente" class="d-flex  flex-column" (cdkDropListDropped)="drop($event)">
@@ -43,7 +43,7 @@
                     <h2>En cours</h2>
                     <div class="d-flex flex-row justify-content-center ">
                         <input id="inputAjoutTache" class="saisieInput" type="text" name="tache" placeholder="tache" [(ngModel)]="newTache.titre">
-                        <button id="buttonAjoutTache" class="btn btn-primary" value="Ajouter" (click)='ajouter("en cours")'>Ajouter</button>
+                        <button id="buttonAjoutTache" class="btn btn-primary" value="Ajouter" (click)='ajouter("enCours")'>Ajouter</button>
                     </div>
                     <div class="flex-row col justify-content-center ">
                         <div id="enCours" [ngClass]="{'isEmpty': enCours.length === 0}" cdkDropList [cdkDropListData]="enCours" class="d-flex  flex-column" (cdkDropListDropped)="drop($event)">

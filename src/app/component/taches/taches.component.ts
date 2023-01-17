@@ -19,7 +19,7 @@ export class TachesComponent implements OnInit {
   newTache: Tache = {
     titre : '',
     termine : false,
-    statut : ''
+    statut : 'undefined'
   };  
   
   filter:string = 'Tous';
@@ -28,25 +28,28 @@ export class TachesComponent implements OnInit {
     private userService: UserService,
     private router: Router){ }
   
-  ngOnInit(): void {
-    this.tacheService.getTaches().subscribe({
-      next: (data:Array<Tache>) => { this.taches = data; 
-        this.taches.forEach(tache => {
-          if(tache.statut == 'En attente') {
-            this.enAttente.push(tache);
-          }
-          else if(tache.statut == 'En cours') {
-            this.enCours.push(tache);
-          }
-          else if(tache.statut == 'Termine') {
-            this.termine.push(tache);
-          }
-          else {
-            this.undifined.push(tache);
-          }
-        });
-      }
-    });
+    ngOnInit(): void {
+      this.tacheService.getTaches().subscribe({
+        next: (data:Array<Tache>) => {
+          this.taches = data;
+          this.taches.forEach(tache => {
+            if(tache.statut == 'enAttente') {
+              this.enAttente.push(tache);
+            }
+            else if(tache.statut == 'enCours') {
+              this.enCours.push(tache);
+            }
+            else if(tache.statut == 'termine') {
+              this.termine.push(tache);
+            }
+            else {
+              tache.statut = 'undefined';
+              this.undifined.push(tache);
+            }
+          });
+        }
+      });
+  
 
   }  
 
@@ -55,13 +58,13 @@ export class TachesComponent implements OnInit {
     this.tacheService.ajoutTaches(this.newTache).subscribe({
       next: (data) => {
         this.taches.push(data);
-        if(type == 'En attente') {
+        if(type == 'enAttente') {
           this.enAttente.push(data);
         }
-        else if(type == 'En cours') {
+        else if(type == 'enCours') {
           this.enCours.push(data);
         }
-        else if(type == 'Termine') {
+        else if(type == 'termine') {
           this.termine.push(data);
         }
         else{
@@ -122,16 +125,14 @@ export class TachesComponent implements OnInit {
       );
 
       let tache = event.container.data[event.currentIndex];
-      console.log("Statut de départ : ",tache.statut);
-      console.log("Statut d'arrivé : ",event.container.id);
       tache.statut = event.container.id;
       this.tacheService.updateTaches(tache).subscribe({
         next: (data) => {
         }
       });
-
     }
   }
+
 }
 
 
