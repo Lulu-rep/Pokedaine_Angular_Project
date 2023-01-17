@@ -78,7 +78,7 @@ export class TachesComponent implements OnInit {
   this.newTache = {
     titre : '',
     termine : false,
-    statut : ''
+    statut : 'undefined'
   };
 }  
 
