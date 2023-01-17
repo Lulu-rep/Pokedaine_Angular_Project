@@ -19,7 +19,7 @@ export class TachesComponent implements OnInit {
   newTache: Tache = {
     titre : '',
     termine : false,
-    statut : ''
+    statut : 'undefined'
   };  
   
   filter:string = 'Tous';
@@ -28,20 +28,50 @@ export class TachesComponent implements OnInit {
     private userService: UserService,
     private router: Router){ }
   
-  ngOnInit(): void {
-    this.tacheService.getTaches().subscribe({
-      next: (data:Array<Tache>) => { this.taches = data; }
-    });
+    ngOnInit(): void {
+      this.tacheService.getTaches().subscribe({
+        next: (data:Array<Tache>) => {
+          this.taches = data;
+          this.taches.forEach(tache => {
+            if(tache.statut == 'enAttente') {
+              this.enAttente.push(tache);
+            }
+            else if(tache.statut == 'enCours') {
+              this.enCours.push(tache);
+            }
+            else if(tache.statut == 'termine') {
+              this.termine.push(tache);
+            }
+            else {
+              tache.statut = 'undefined';
+              this.undifined.push(tache);
+            }
+          });
+        }
+      });
+  
 
   }  
 
-  ajouter(statut:string) {
-    this.newTache.statut = statut;
+  ajouter(type:string) {
+    this.newTache.statut = type;
     this.tacheService.ajoutTaches(this.newTache).subscribe({
       next: (data) => {
         this.taches.push(data);
+        if(type == 'enAttente') {
+          this.enAttente.push(data);
+        }
+        else if(type == 'enCours') {
+          this.enCours.push(data);
+        }
+        else if(type == 'termine') {
+          this.termine.push(data);
+        }
+        else{
+          this.undifined.push(data);
+        }
         this.tacheService.getTaches().subscribe({
-          next: (data:Array<Tache>) => { this.taches = data; }
+          next: (data:Array<Tache>) => { this.taches = data;}
         });
       }
     });
@@ -56,6 +86,10 @@ export class TachesComponent implements OnInit {
     this.tacheService.removeTaches(tache).subscribe({
       next: (data) => {
         this.taches = this.taches.filter(t => tache._id != t._id);
+        this.enAttente = this.enAttente.filter(t => tache._id != t._id);
+        this.enCours = this.enCours.filter(t => tache._id != t._id);
+        this.termine = this.termine.filter(t => tache._id != t._id);
+        this.undifined = this.undifined.filter(t => tache._id != t._id);
       }
     });
 
@@ -96,9 +130,9 @@ export class TachesComponent implements OnInit {
         next: (data) => {
         }
       });
-
     }
   }
+
 }
 
 
