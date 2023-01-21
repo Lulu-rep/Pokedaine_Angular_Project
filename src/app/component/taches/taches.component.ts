@@ -26,71 +26,65 @@ export class TachesComponent implements OnInit {
   };
 
 
- 
-  filter:string = 'Tous';
+
+  filter: string = 'Tous';
 
 
   constructor(private tacheService: TachesService,
     private userService: UserService,
-    private router: Router){ }
- 
-    ngOnInit(): void {
-      this.tacheService.getListes().subscribe({
-        next: (data2: Array<liste>) => {
-          this.liste2 = data2;
-          this.liste2.forEach(liste => {
-            this.newTache.push({
-              titre: '',
-              termine: false,
-              statut: liste.titre
-              });
+    private router: Router) { }
+
+  ngOnInit(): void {
+    this.tacheService.getListes().subscribe({
+      next: (data2: Array<liste>) => {
+        this.liste2 = data2;
+        this.liste2.forEach(liste => {
+          this.newTache.push({
+            titre: '',
+            termine: false,
+            statut: liste.titre
           });
-        }
-      });
-    }  
-
-
-    ajouter(liste: liste) {
-      let index = this.liste2.indexOf(liste);
-      if(liste.tachesliste == undefined){
-        liste.tachesliste = [];
+        });
       }
-      this.newTache[index].statut = liste.titre;
-      console.log(this.newTache[index]);
-      this.tacheService.ajoutTaches(this.newTache[index]).subscribe({
-        next: (data: Tache) => {
-          let id = data._id as string;
-          console.log(id);
-          console.log(liste.taches);
-          console.log(liste.taches.length);
-          if(liste.taches.length == 0) {
-            liste.taches = [id];
-          } else {
-            liste.taches.push(id);
-          }
-          if(liste.tachesliste.length == 0) {
-            liste.tachesliste = [data];
-          } else {
-            liste.tachesliste.push(data);
-          }
-          console.log(this.liste2)
-          console.log(liste.tachesliste);
-          console.log(liste.taches);
-          let liste3 : listeDB;
-          liste3 = {
-            _id: liste._id,
-            titre: liste.titre,
-            taches: liste.taches,
-          }
-          this.tacheService.updateListes(liste3).subscribe({
-            next: (data2: listeDB) => {}
-              });
-            }
-          });
+    });
+  }
+
+  ajouter(liste: liste) {
+    let index = this.liste2.indexOf(liste);
+    if (liste.tachesliste == undefined) {
+      liste.tachesliste = [];
+    }
+    this.newTache[index].statut = liste.titre;;
+    this.tacheService.ajoutTaches(this.newTache[index]).subscribe({
+      next: (data: Tache) => {
+        let id = data._id as string;
+        if (liste.taches.length == 0) {
+          liste.taches = [id];
+        } else {
+          liste.taches.push(id);
         }
-
-  
-
+        if (liste.tachesliste.length == 0) {
+          liste.tachesliste = [data];
+        } else {
+          liste.tachesliste.push(data);
+        }
+        let liste3: listeDB;
+        liste3 = {
+          _id: liste._id,
+          titre: liste.titre,
+          taches: liste.taches,
+        }
+        this.tacheService.updateListes(liste3).subscribe({
+          next: (data2: listeDB) => { }
+        });
+      }
+    });
+    this.newTache[index] = {
+      titre: '',
+      termine: false,
+      statut: liste.titre
+    };
+  }
 
   supprimer(tache: Tache): void {
     this.tacheService.removeTaches(tache).subscribe({
@@ -112,7 +106,6 @@ export class TachesComponent implements OnInit {
     });
   }
 
-
   modifier(tache: Tache) {
     tache.termine = !tache.termine;
     this.tacheService.updateTaches(tache).subscribe({
@@ -121,18 +114,15 @@ export class TachesComponent implements OnInit {
     });
   }
 
-
   loggout() {
     this.userService.logout().subscribe(() => {
       this.router.navigate(['']);
     })
   }
 
-
-  change(filter:string) {
+  change(filter: string) {
     this.filter = filter;
   }
-
 
   drop(event: CdkDragDrop<Tache[]>) {
     if (event.previousContainer === event.container) {
@@ -181,7 +171,6 @@ export class TachesComponent implements OnInit {
     }
   }
 
-
   ajoutliste() {
     this.newListe.titre = this.newListeAdd.titre;
     this.newListe.taches = [];
@@ -199,18 +188,23 @@ export class TachesComponent implements OnInit {
         };
       }
     });
+    //recharger la page
+    this.tacheService.getListes().subscribe({
+      next: (data: Array<liste>) => { this.liste2 = data; }
+    });
   }
-
 
   supprimerListe(liste: liste) {
     //supprime toutes les taches de la liste
-    liste.tachesliste.forEach(tache => {
-      this.tacheService.removeTaches(tache).subscribe({
-        next: (data) => {
-        }
-      });
+    if(liste.tachesliste.length !== 0){
+      liste.tachesliste.forEach(tache => {
+        this.tacheService.removeTaches(tache).subscribe({
+          next: (data) => {
+          }
+        });
+      }
+      );
     }
-    );
     //supprime la liste
     this.tacheService.removeListes(liste).subscribe({
       next: (data) => {
