@@ -4,6 +4,8 @@ import { Tache } from 'src/app/model/tache';
 import { TachesService } from 'src/app/service/taches.service';
 import { UserService } from 'src/app/service/user.service';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import { liste, listeDB } from 'src/app/model/list';
+
 
 @Component({
   selector: 'app-taches',
@@ -11,89 +13,105 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/dr
   styleUrls: ['./taches.component.css']
 })
 export class TachesComponent implements OnInit {
-  taches: Array<Tache> = [];
-  undifined: Array<Tache> = [];
-  enAttente: Array<Tache> = [];
-  enCours: Array<Tache> = [];
-  termine: Array<Tache> = [];
-  newTache: Tache = {
-    titre : '',
-    termine : false,
-    statut : 'undefined'
-  };  
-  
+  liste2: Array<liste> = [];
+  newTache: Array<Tache> = [];
+  newListe: listeDB = {
+    titre: '',
+    taches: [],
+  };
+  newListeAdd: liste = {
+    titre: '',
+    taches: [],
+    tachesliste: [],
+  };
+
+
+ 
   filter:string = 'Tous';
+
 
   constructor(private tacheService: TachesService,
     private userService: UserService,
     private router: Router){ }
-  
+ 
     ngOnInit(): void {
-      this.tacheService.getTaches().subscribe({
-        next: (data:Array<Tache>) => {
-          this.taches = data;
-          this.taches.forEach(tache => {
-            if(tache.statut == 'enAttente') {
-              this.enAttente.push(tache);
-            }
-            else if(tache.statut == 'enCours') {
-              this.enCours.push(tache);
-            }
-            else if(tache.statut == 'termine') {
-              this.termine.push(tache);
-            }
-            else {
-              tache.statut = 'undefined';
-              this.undifined.push(tache);
-            }
+      this.tacheService.getListes().subscribe({
+        next: (data2: Array<liste>) => {
+          this.liste2 = data2;
+          this.liste2.forEach(liste => {
+            this.newTache.push({
+              titre: '',
+              termine: false,
+              statut: liste.titre
+              });
           });
         }
       });
+    }  
+
+
+    ajouter(liste: liste) {
+      let index = this.liste2.indexOf(liste);
+      if(liste.tachesliste == undefined){
+        liste.tachesliste = [];
+      }
+      this.newTache[index].statut = liste.titre;
+      console.log(this.newTache[index]);
+      this.tacheService.ajoutTaches(this.newTache[index]).subscribe({
+        next: (data: Tache) => {
+          let id = data._id as string;
+          console.log(id);
+          console.log(liste.taches);
+          console.log(liste.taches.length);
+          if(liste.taches.length == 0) {
+            liste.taches = [id];
+          } else {
+            liste.taches.push(id);
+          }
+          if(liste.tachesliste.length == 0) {
+            liste.tachesliste = [data];
+          } else {
+            liste.tachesliste.push(data);
+          }
+          console.log(this.liste2)
+          console.log(liste.tachesliste);
+          console.log(liste.taches);
+          let liste3 : listeDB;
+          liste3 = {
+            _id: liste._id,
+            titre: liste.titre,
+            taches: liste.taches,
+          }
+          this.tacheService.updateListes(liste3).subscribe({
+            next: (data2: listeDB) => {}
+              });
+            }
+          });
+        }
+
   
 
-  }  
-
-  ajouter(type:string) {
-    this.newTache.statut = type;
-    this.tacheService.ajoutTaches(this.newTache).subscribe({
-      next: (data) => {
-        this.taches.push(data);
-        if(type == 'enAttente') {
-          this.enAttente.push(data);
-        }
-        else if(type == 'enCours') {
-          this.enCours.push(data);
-        }
-        else if(type == 'termine') {
-          this.termine.push(data);
-        }
-        else{
-          this.undifined.push(data);
-        }
-        this.tacheService.getTaches().subscribe({
-          next: (data:Array<Tache>) => { this.taches = data;}
-        });
-      }
-    });
-  this.newTache = {
-    titre : '',
-    termine : false,
-    statut : 'undefined'
-  };
-}  
 
   supprimer(tache: Tache): void {
     this.tacheService.removeTaches(tache).subscribe({
       next: (data) => {
-        this.taches = this.taches.filter(t => tache._id != t._id);
-        this.enAttente = this.enAttente.filter(t => tache._id != t._id);
-        this.enCours = this.enCours.filter(t => tache._id != t._id);
-        this.termine = this.termine.filter(t => tache._id != t._id);
-        this.undifined = this.undifined.filter(t => tache._id != t._id);
+        this.liste2.forEach(liste => {
+          liste.tachesliste = liste.tachesliste.filter(t => t._id != tache._id);
+          liste.taches = liste.taches.filter(t => t != tache._id);
+
+          this.tacheService.updateListes(liste).subscribe({
+            next: (data2: liste) => {
+              this.tacheService.getListes().subscribe({
+                next: (data3: Array<liste>) => { this.liste2 = data3; }
+              });
+            }
+          });
+        }
+        );
       }
     });
-
   }
+
 
   modifier(tache: Tache) {
     tache.termine = !tache.termine;
@@ -103,15 +121,18 @@ export class TachesComponent implements OnInit {
     });
   }
 
+
   loggout() {
     this.userService.logout().subscribe(() => {
       this.router.navigate(['']);
     })
   }
 
+
   change(filter:string) {
     this.filter = filter;
   }
+
 
   drop(event: CdkDragDrop<Tache[]>) {
     if (event.previousContainer === event.container) {
@@ -123,16 +144,78 @@ export class TachesComponent implements OnInit {
         event.previousIndex,
         event.currentIndex,
       );
-
       let tache = event.container.data[event.currentIndex];
-      tache.statut = event.container.id;
-      this.tacheService.updateTaches(tache).subscribe({
-        next: (data) => {
+      this.liste2.forEach(liste => {
+
+        if (liste._id == event.container.id) {
+          tache.statut = liste.titre;
+          this.tacheService.updateTaches(tache).subscribe({
+            next: (data) => {
+            }
+          });
+          if (tache._id) {
+            liste.taches.push(tache._id);
+          }
+          this.tacheService.updateListes(liste).subscribe({
+            next: (data2: liste) => {
+              //actualiser la liste
+              this.tacheService.getListes().subscribe({
+                next: (data3: Array<liste>) => { this.liste2 = data3; }
+              });
+            }
+          });
+        }
+        if (liste._id == event.previousContainer.id) {
+          liste.tachesliste = liste.tachesliste.filter(t => t._id != tache._id);
+          liste.taches = liste.taches.filter(t => t != tache._id);
+          this.tacheService.updateListes(liste).subscribe({
+            next: (data2: liste) => {
+              //actualiser la liste
+              this.tacheService.getListes().subscribe({
+                next: (data3: Array<liste>) => { this.liste2 = data3; }
+              });
+            }
+          });
         }
       });
     }
   }
 
+
+  ajoutliste() {
+    this.newListe.titre = this.newListeAdd.titre;
+    this.newListe.taches = [];
+    this.tacheService.ajoutListes(this.newListe).subscribe({
+      next: (data: listeDB) => {
+        let id = data._id as string;
+        this.newListeAdd._id = id;
+        this.newListeAdd.taches = [];
+        this.newListeAdd.tachesliste = [];
+        this.liste2.push(this.newListeAdd);
+        this.newListeAdd = {
+          titre: '',
+          taches: [],
+          tachesliste: [],
+        };
+      }
+    });
+  }
+
+
+  supprimerListe(liste: liste) {
+    //supprime toutes les taches de la liste
+    liste.tachesliste.forEach(tache => {
+      this.tacheService.removeTaches(tache).subscribe({
+        next: (data) => {
+        }
+      });
+    }
+    );
+    //supprime la liste
+    this.tacheService.removeListes(liste).subscribe({
+      next: (data) => {
+        this.liste2 = this.liste2.filter(l => l._id != liste._id);
+      }
+    });
+  }
 }
-
-

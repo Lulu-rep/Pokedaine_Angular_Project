@@ -3,69 +3,27 @@
         <div class="bd-highlight d-flex justify-content-center">
             <h1>Taches</h1>
             <button class="btn btn-outline-secondary m-1" (click)="loggout()">Logout</button>
-
+        </div>
+        <div class="d-flex flex-row justify-content-center">
+            <input type="text" id="inputNewList" name="tache" placeholder="Nom de la nouvelle liste" [(ngModel)]="newListeAdd.titre">
+            <button class="btn btn-primary m-1" (click)="ajoutliste()">Ajouter</button>
         </div>
         <div>
             <div cdkDropListGroup class="row main">
-                <div class="col-md-3">
-                    <h2>Undifined</h2>
-                    <div class="d-flex flex-row justify-content-center ">
-                        <input id="inputAjoutTache" class="saisieInput" type="text" name="tache" placeholder="tache" [(ngModel)]="newTache.titre">
-                        <button id="buttonAjoutTache" class="btn btn-primary" value="Ajouter" (click)='ajouter("undifined")'>Ajouter</button>
+                <div class="col-md-3 liste" *ngFor="let liste of liste2; let i = index">
+                    <div class="d-flex justify-content-center align-items-center titreListe">
+                        <h2>{{liste.titre}}</h2>
+                        <button class="btn btn-outline-danger m-1" (click)='supprimerListe(liste)'>Supprimer</button>
                     </div>
-                    <div class="flex-row col justify-content-center ">
-                        <div id="Undifined" [ngClass]="{'isEmpty': undifined.length === 0}" cdkDropList [cdkDropListData]="undifined" class="d-flex  flex-column" (cdkDropListDropped)="drop($event)">
-                            <div class="d-flex justify-content-between m-1" *ngFor="let tache of undifined" cdkDrag>
+                    <div class="d-flex flex-row justify-content-center align-items-center ">
+                        <input class="inputAjoutTache" class="saisieInput" type="text" name="tache" placeholder="tache" [(ngModel)]="newTache[i].titre">
+                        <button class="buttonAjoutTache" class="btn btn-primary" value="Ajouter" (click)='ajouter(liste)'>Ajouter</button>
+                    </div>
+                    <div class="d-flex  justify-content-center">
+                        <div [ngClass]="{'isEmpty': liste.taches.length === 0 }" cdkDropList [cdkDropListData]="liste.tachesliste" [id]="liste._id ? liste._id : ''" class="d-flex flex-column " (cdkDropListDropped)="drop($event)">
+                            <div class="d-flex justify-content-center align-items-center m-1" *ngFor="let tache of liste.tachesliste" cdkDrag>
                                 <input (click)="modifier(tache)" type="checkbox" [(ngModel)]="tache.termine">
-                                <div>{{tache.titre}}</div>
-                                <button class="btn btn-outline-danger m-1" (click)='supprimer(tache)'>Supprimer</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <h2>En attente</h2>
-                    <div class="d-flex flex-row justify-content-center ">
-                        <input id="inputAjoutTache" class="saisieInput" type="text" name="tache" placeholder="tache" [(ngModel)]="newTache.titre">
-                        <button id="buttonAjoutTache" class="btn btn-primary" value="Ajouter" (click)='ajouter("enAttente")'>Ajouter</button>
-                    </div>
-                    <div class="flex-row col justify-content-center ">
-                        <div id="enAttente" [ngClass]="{'isEmpty': enAttente.length === 0}" cdkDropList [cdkDropListData]="enAttente" class="d-flex  flex-column" (cdkDropListDropped)="drop($event)">
-                            <div class="d-flex justify-content-between m-1" *ngFor="let tache of enAttente" cdkDrag>
-                                <input (click)="modifier(tache)" type="checkbox" [(ngModel)]="tache.termine">
-                                <div>{{tache.titre}}</div>
-                                <button class="btn btn-outline-danger m-1" (click)='supprimer(tache)'>Supprimer</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <h2>En cours</h2>
-                    <div class="d-flex flex-row justify-content-center ">
-                        <input id="inputAjoutTache" class="saisieInput" type="text" name="tache" placeholder="tache" [(ngModel)]="newTache.titre">
-                        <button id="buttonAjoutTache" class="btn btn-primary" value="Ajouter" (click)='ajouter("enCours")'>Ajouter</button>
-                    </div>
-                    <div class="flex-row col justify-content-center ">
-                        <div id="enCours" [ngClass]="{'isEmpty': enCours.length === 0}" cdkDropList [cdkDropListData]="enCours" class="d-flex  flex-column" (cdkDropListDropped)="drop($event)">
-                            <div class="d-flex justify-content-between m-1" *ngFor="let tache of enCours" cdkDrag>
-                                <input (click)="modifier(tache)" type="checkbox" [(ngModel)]="tache.termine">
-                                <div>{{tache.titre}}</div>
-                                <button class="btn btn-outline-danger m-1" (click)='supprimer(tache)'>Supprimer</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <h2>Terminé</h2>
-                    <div class="d-flex flex-row justify-content-center ">
-                        <input id="inputAjoutTache" class="saisieInput" type="text" name="tache" placeholder="tache" [(ngModel)]="newTache.titre">
-                        <button id="buttonAjoutTache" class="btn btn-primary" value="Ajouter" (click)='ajouter("termine")'>Ajouter</button>
-                    </div>
-                    <div class="flex-row col justify-content-center ">
-                        <div id="termine" [ngClass]="{'isEmpty': termine.length === 0}" cdkDropList [cdkDropListData]="termine" class="d-flex  flex-column" (cdkDropListDropped)="drop($event)">
-                            <div class="d-flex justify-content-between m-1" *ngFor="let tache of termine" cdkDrag>
-                                <input (click)="modifier(tache)" type="checkbox" [(ngModel)]="tache.termine">
-                                <div>{{tache.titre}}</div>
+                                <div [ngClass]="tache.termine? 'text-decoration-line-through' : '' ">{{tache.titre}}</div>
                                 <button class="btn btn-outline-danger m-1" (click)='supprimer(tache)'>Supprimer</button>
                             </div>
                         </div>
@@ -75,3 +33,6 @@
         </div>
     </div>
 </div>
+
+
+

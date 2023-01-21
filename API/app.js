@@ -5,6 +5,7 @@ const mongodb = require('mongodb');
 const bodyParser = require('body-parser');
 const { tacheGet, tachePost, tacheDelete, tachePut } = require('./tacheController');
 const { signIn, login, logout, isConnected } = require('./authController');
+const { listeGet, listePost, listeDelete, listePut } = require('./listeController');
 const cors = require('cors')
 
 const session = require('express-session');
@@ -36,6 +37,12 @@ app.post('/signin', signIn);
 app.post('/login', login);
 app.post('/logout', logout);
 app.get('/isConnected', checkSignIn, isConnected);
+
+app.get('/listes', checkSignIn, listeGet);
+app.post('/listes', checkSignIn, listePost);
+app.delete('/listes/:id', checkSignIn, listeDelete);
+app.put('/listes/:id', checkSignIn, listePut);
+
 app.get('/taches', checkSignIn, tacheGet);
 app.post('/taches', checkSignIn, tachePost);
 app.delete('/taches/:id', checkSignIn, tacheDelete);
