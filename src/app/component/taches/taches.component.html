@@ -20,8 +20,8 @@
                         <button class="buttonAjoutTache" class="btn btn-primary" value="Ajouter" (click)='ajouter(liste)'>Ajouter</button>
                     </div>
                     <div class="d-flex  justify-content-center">
-                        <div [ngClass]="{'isEmpty': liste.taches.length === 0 }" cdkDropList [cdkDropListData]="liste.tachesliste" [id]="liste._id ? liste._id : ''" class="d-flex flex-column " (cdkDropListDropped)="drop($event)">
-                            <div class="d-flex justify-content-center align-items-center m-1" *ngFor="let tache of liste.tachesliste" cdkDrag>
+                        <div [ngClass]="{'isEmpty': liste.taches.length === 0 }" cdkDropList [cdkDropListData]="liste.tachesliste" [id]="liste._id ? liste._id : ''" class="col " (cdkDropListDropped)="drop($event)">
+                            <div class="d-flex justify-content-between m-1 align-items-center" *ngFor="let tache of liste.tachesliste" cdkDrag>
                                 <input (click)="modifier(tache)" type="checkbox" [(ngModel)]="tache.termine">
                                 <div [ngClass]="tache.termine? 'text-decoration-line-through' : '' ">{{tache.titre}}</div>
                                 <button class="btn btn-outline-danger m-1" (click)='supprimer(tache)'>Supprimer</button>
