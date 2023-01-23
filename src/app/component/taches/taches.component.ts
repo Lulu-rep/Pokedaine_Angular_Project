@@ -215,7 +215,14 @@ export class TachesComponent implements OnInit {
         };
       }
     });
+    //actualiser la liste
+    this.tacheService.getListes().subscribe({
+      next: (data3: Array<liste>) => { 
+        console.log("test",data3);
+        this.liste2 = data3; }
+    });
     this.ngOnInit();
+    console.log(this.liste2);
   }
 
 
