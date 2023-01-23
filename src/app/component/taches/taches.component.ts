@@ -34,27 +34,42 @@ export class TachesComponent implements OnInit {
     private userService: UserService,
     private router: Router) { }
 
-  ngOnInit(): void {
-    this.tacheService.getListes().subscribe({
-      next: (data2: Array<liste>) => {
-        this.liste2 = data2;
-        this.liste2.forEach(liste => {
-          this.newTache.push({
-            titre: '',
-            termine: false,
-            statut: liste.titre
+    ngOnInit(): void {
+      this.tacheService.getListes().subscribe({
+        next: (data2: Array<liste>) => {
+          this.liste2 = data2;
+          this.liste2.forEach(liste => {
+            this.newTache.push({
+              titre: '',
+              termine: false,
+              statut: liste.titre
+              });
+            liste.tachesliste = [];
+            liste.taches.forEach(tache => {
+              this.tacheService.getTaches().subscribe({
+                next: (data: Array<Tache>) => {
+                  data.forEach(tache2 => {
+                    if (tache2._id == tache) {
+                      liste.tachesliste.push(tache2);
+                    }
+                  });
+                }
+              });
+            });
           });
-        });
-      }
-    });
-  }
+        }
+      });
+    }
 
   ajouter(liste: liste) {
     let index = this.liste2.indexOf(liste);
     if (liste.tachesliste == undefined) {
       liste.tachesliste = [];
     }
-    this.newTache[index].statut = liste.titre;;
+    this.newTache[index].statut = liste.titre;
+    if(this.newTache[index].titre == ''){
+      return;
+    }
     this.tacheService.ajoutTaches(this.newTache[index]).subscribe({
       next: (data: Tache) => {
         let id = data._id as string;
@@ -79,11 +94,8 @@ export class TachesComponent implements OnInit {
         });
       }
     });
-    this.newTache[index] = {
-      titre: '',
-      termine: false,
-      statut: liste.titre
-    };
+    //vider le champ
+    this.newTache[index].titre = '';
   }
 
   supprimer(tache: Tache): void {
@@ -173,37 +185,43 @@ export class TachesComponent implements OnInit {
 
   ajoutliste() {
     this.newListe.titre = this.newListeAdd.titre;
-    this.newListe.taches = [];
+    this.newListe.taches = this.newListeAdd.taches;
+    if (this.newListe.titre == '') {
+      return;
+    }
     this.tacheService.ajoutListes(this.newListe).subscribe({
-      next: (data: listeDB) => {
-        let id = data._id as string;
-        this.newListeAdd._id = id;
-        this.newListeAdd.taches = [];
-        this.newListeAdd.tachesliste = [];
-        this.liste2.push(this.newListeAdd);
-        this.newListeAdd = {
-          titre: '',
-          taches: [],
-          tachesliste: [],
-        };
+      next: (data) => {
+        this.liste2.push(data);
+        this.tacheService.getListes().subscribe({
+          next: (data2: Array<liste>) => { this.liste2 = data2; }
+        });
       }
     });
-    //recharger la page
-    this.tacheService.getListes().subscribe({
-      next: (data: Array<liste>) => { this.liste2 = data; }
+    this.newListe = {
+      titre: '',
+      taches: [],
+    };
+    this.newListeAdd = {
+      titre: '',
+      taches: [],
+      tachesliste: []
+    };
+    this.newTache.push({
+      titre: '',
+      termine: false,
+      statut: ''
     });
   }
 
   supprimerListe(liste: liste) {
     //supprime toutes les taches de la liste
-    if(liste.tachesliste.length !== 0){
+    if(liste.tachesliste.length != 0){
       liste.tachesliste.forEach(tache => {
         this.tacheService.removeTaches(tache).subscribe({
           next: (data) => {
           }
         });
-      }
-      );
+      });
     }
     //supprime la liste
     this.tacheService.removeListes(liste).subscribe({

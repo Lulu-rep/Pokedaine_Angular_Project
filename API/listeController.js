@@ -4,22 +4,24 @@ const ObjectId = require('mongodb').ObjectId;
 const url = "mongodb://localhost:27017";
 
 exports.listeGet = async function (req, res) {
-    try{
-        db= await MongoClient.connect(url);
+    try {
+        db = await MongoClient.connect(url);
         let dbo = db.db("taches");
-        let listeObj = await dbo.collection("listes").find({}).toArray();
-        for(let i=0; i<listeObj.length; i++){
-            const liste = listeObj[i];
+        let listeObject = await dbo.collection("listes").find({}).toArray();
+        for (let i = 0; i < listeObject.length; i++) {
+            const liste = listeObject[i];
             if(liste.taches){
-                const taches = liste.taches.map(tacheId => new ObjectId(tacheId));
-                liste.taches = await dbo.collection("taches").find({_id: {$in: liste.taches}}).toArray();
+            const taches = liste.taches.map(t => new ObjectId(t));
+            liste.tachesliste = await dbo.collection("taches").find({ _id: { $in: taches } }).toArray();
             }
+            
         }
-        res.status(200).json(listeObj);
+        res.status(200).json(listeObject);
     } catch (err) {
         console.log(err);
-        res.status(500).json({message: err});
-    }
+        res.status(500).json({ message: err });
+    } 
+    db.close();
 };
 
 exports.listePost = async function (req, res) {
@@ -34,6 +36,7 @@ exports.listePost = async function (req, res) {
         console.log(err);
         res.status(500).json({message: err});
     }
+    db.close();
 };
 
 exports.listeDelete = async function (req, res) {
@@ -46,6 +49,7 @@ exports.listeDelete = async function (req, res) {
         console.log(err);
         res.status(500).json({ message: err })
     }
+    db.close();
 };
 
 exports.listePut = async function (req, res) {
@@ -58,4 +62,5 @@ exports.listePut = async function (req, res) {
         console.log(err);
         res.status(500).json({ message: err })
     }
+    db.close();
 };
