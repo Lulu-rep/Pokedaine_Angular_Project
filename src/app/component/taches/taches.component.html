@@ -10,7 +10,7 @@
         </div>
         <div>
             <div cdkDropListGroup class="row main">
-                <div class="col-md-3 liste" *ngFor="let liste of liste2; let i = index">
+                <div class="col liste" *ngFor="let liste of liste2; let i = index">
                     <div class="d-flex justify-content-center align-items-center titreListe">
                         <h2>{{liste.titre}}</h2>
                         <button class="btn btn-outline-danger m-1" (click)='supprimerListe(liste)'>Supprimer</button>
