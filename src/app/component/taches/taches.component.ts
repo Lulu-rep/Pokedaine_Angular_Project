@@ -60,8 +60,6 @@ export class TachesComponent implements OnInit {
         }
       });
     }
-  
-
 
   ajouter(liste: liste) {
     let index = this.liste2.indexOf(liste);
@@ -103,10 +101,6 @@ export class TachesComponent implements OnInit {
     //vider le champ
     this.newTache[index].titre = '';
   }
-
-
-
-
 
   supprimer(tache: Tache): void {
     this.tacheService.removeTaches(tache).subscribe({
@@ -200,29 +194,29 @@ export class TachesComponent implements OnInit {
 
   ajoutliste() {
     this.newListe.titre = this.newListeAdd.titre;
-    this.newListe.taches = [];
+    this.newListe.taches = this.newListeAdd.taches;
     this.tacheService.ajoutListes(this.newListe).subscribe({
-      next: (data: listeDB) => {
-        let id = data._id as string;
-        this.newListeAdd._id = id;
-        this.newListeAdd.taches = [];
-        this.newListeAdd.tachesliste = [];
-        this.liste2.push(this.newListeAdd);
-        this.newListeAdd = {
-          titre: '',
-          taches: [],
-          tachesliste: [],
-        };
+      next: (data) => {
+        this.liste2.push(data);
+        this.tacheService.getListes().subscribe({
+          next: (data2: Array<liste>) => { this.liste2 = data2; }
+        });
       }
     });
-    //actualiser la liste
-    this.tacheService.getListes().subscribe({
-      next: (data3: Array<liste>) => { 
-        console.log("test",data3);
-        this.liste2 = data3; }
+    this.newListe = {
+      titre: '',
+      taches: [],
+    };
+    this.newListeAdd = {
+      titre: '',
+      taches: [],
+      tachesliste: []
+    };
+    this.newTache.push({
+      titre: '',
+      termine: false,
+      statut: ''
     });
-      this.ngOnInit();
-    console.log(this.liste2);
   }
 
 
