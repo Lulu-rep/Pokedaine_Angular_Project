@@ -67,6 +67,9 @@ export class TachesComponent implements OnInit {
       liste.tachesliste = [];
     }
     this.newTache[index].statut = liste.titre;
+    if(this.newTache[index].titre == ''){
+      return;
+    }
     console.log(this.newTache[index]);
     this.tacheService.ajoutTaches(this.newTache[index]).subscribe({
       next: (data: Tache) => {
@@ -195,6 +198,9 @@ export class TachesComponent implements OnInit {
   ajoutliste() {
     this.newListe.titre = this.newListeAdd.titre;
     this.newListe.taches = this.newListeAdd.taches;
+    if (this.newListe.titre == '') {
+      return;
+    }
     this.tacheService.ajoutListes(this.newListe).subscribe({
       next: (data) => {
         this.liste2.push(data);
