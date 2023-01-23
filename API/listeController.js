@@ -21,7 +21,6 @@ exports.listeGet = async function (req, res) {
         console.log(err);
         res.status(500).json({ message: err });
     } 
-    db.close();
 };
 
 exports.listePost = async function (req, res) {
@@ -36,7 +35,6 @@ exports.listePost = async function (req, res) {
         console.log(err);
         res.status(500).json({message: err});
     }
-    db.close();
 };
 
 exports.listeDelete = async function (req, res) {
@@ -49,7 +47,6 @@ exports.listeDelete = async function (req, res) {
         console.log(err);
         res.status(500).json({ message: err })
     }
-    db.close();
 };
 
 exports.listePut = async function (req, res) {
@@ -62,5 +59,4 @@ exports.listePut = async function (req, res) {
         console.log(err);
         res.status(500).json({ message: err })
     }
-    db.close();
 };

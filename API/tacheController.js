@@ -12,7 +12,6 @@ exports.tacheGet = async function(req, res) {
         console.log(err);
         res.status(500).json({ message: err })
     }
-    db.close();
 };
 
 exports.tachePost = async function(req, res, next) {
@@ -26,7 +25,6 @@ exports.tachePost = async function(req, res, next) {
         console.log(err);
         res.status(500).json({ message: err })
     }
-    db.close();
 };
 
 exports.tacheDelete = async function(req, res, next) {
@@ -39,7 +37,6 @@ exports.tacheDelete = async function(req, res, next) {
         console.log(err);
         res.status(500).json({ message: err })
     }
-    db.close();
 };
 
 exports.tachePut = async function(req, res, next) {
@@ -52,5 +49,4 @@ exports.tachePut = async function(req, res, next) {
         console.log(err);
         res.status(500).json({ message: err })
     }
-    db.close();
 };

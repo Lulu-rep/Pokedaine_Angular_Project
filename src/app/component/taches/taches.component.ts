@@ -221,7 +221,7 @@ export class TachesComponent implements OnInit {
         console.log("test",data3);
         this.liste2 = data3; }
     });
-    this.ngOnInit();
+      this.ngOnInit();
     console.log(this.liste2);
   }
 
