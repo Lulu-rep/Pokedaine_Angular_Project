@@ -70,13 +70,9 @@ export class TachesComponent implements OnInit {
     if(this.newTache[index].titre == ''){
       return;
     }
-    console.log(this.newTache[index]);
     this.tacheService.ajoutTaches(this.newTache[index]).subscribe({
       next: (data: Tache) => {
         let id = data._id as string;
-        console.log(id);
-        console.log(liste.taches);
-        console.log(liste.taches.length);
         if (liste.taches.length == 0) {
           liste.taches = [id];
         } else {
@@ -87,9 +83,6 @@ export class TachesComponent implements OnInit {
         } else {
           liste.tachesliste.push(data);
         }
-        console.log(this.liste2)
-        console.log(liste.tachesliste);
-        console.log(liste.taches);
         let liste3: listeDB;
         liste3 = {
           _id: liste._id,
