@@ -47,7 +47,7 @@ exports.register = async function (req, res) {
     let user = req.body;
     try {
         if (user.login == "" || user.password == "") {
-            res.status(400).json({ message: 'Veuillez saisir un nom dutilisateur et/ou un mot de passe' });
+            res.status(400).json({ message: 'Veuillez saisir un nom d utilisateur et/ou un mot de passe' });
             return
         }
         else {
@@ -59,7 +59,7 @@ exports.register = async function (req, res) {
                 return
             }
             else {
-                user.listeIds = [];
+                user.listesId = [];
                 await dbo.collection("utilisateur").insertOne(user);
                 res.status(200).send();
             }
