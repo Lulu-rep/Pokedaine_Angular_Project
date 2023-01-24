@@ -1,4 +1,7 @@
-# AngularTP
+# Projet Angular S3
+### Geiguer Pierre
+### Repplinger Lucas
+#### Sta Mehdi
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 15.0.1.
 
