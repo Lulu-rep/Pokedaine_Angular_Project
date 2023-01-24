@@ -4,8 +4,9 @@ const MongoClient = require('mongodb').MongoClient;
 const mongodb = require('mongodb');
 const bodyParser = require('body-parser');
 const { tacheGet, tachePost, tacheDelete, tachePut } = require('./tacheController');
-const { signIn, login, logout, isConnected } = require('./authController');
+const { signIn, login, logout, isConnected, register } = require('./authController');
 const { listeGet, listePost, listeDelete, listePut } = require('./listeController');
+const { UserInfo, userPut } = require('./userController');
 const cors = require('cors')
 
 const session = require('express-session');
@@ -26,6 +27,7 @@ app.use(session({
 
 
 function checkSignIn(req, res, next) {
+    console.log(req.session.user);
     if (req.session.user) {
         next(); //Si la session exist on passe au handler normal.
     } else {
@@ -37,8 +39,11 @@ app.post('/signin', signIn);
 app.post('/login', login);
 app.post('/logout', logout);
 app.get('/isConnected', checkSignIn, isConnected);
+app.get('/userInfos', checkSignIn, UserInfo);
+app.put('/userInfos/:id', checkSignIn, userPut);
+app.post('/register', register);
 
-app.get('/listes', checkSignIn, listeGet);
+app.get('/listes/:id', checkSignIn, listeGet);
 app.post('/listes', checkSignIn, listePost);
 app.delete('/listes/:id', checkSignIn, listeDelete);
 app.put('/listes/:id', checkSignIn, listePut);

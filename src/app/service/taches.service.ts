@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { liste, listeDB } from '../model/list';
 import { Tache } from '../model/tache';
+import { User } from '../model/user';
 
 @Injectable({
   providedIn: 'root'
@@ -28,8 +29,9 @@ export class TachesService {
   removeTaches(tache:Tache):Observable<Tache> {
     return this.http.delete<Tache>(this.url+tache._id, {withCredentials:true});
   }
-  getListes():Observable<Array<liste>> {
-    return this.http.get<Array<liste>>(this.urlListe, {withCredentials:true});
+
+  getListes(user:User):Observable<Array<liste>> {
+    return this.http.get<Array<liste>>(this.urlListe+user._id, {withCredentials:true});
   }
 
   ajoutListes(liste:listeDB):Observable<liste> {
@@ -43,4 +45,5 @@ export class TachesService {
   removeListes(liste:listeDB):Observable<liste> {
     return this.http.delete<liste>(this.urlListe+liste._id, {withCredentials:true});
   }
+
 }
