@@ -47,7 +47,6 @@ export class TachesComponent implements OnInit {
         const data = await lastValueFrom(this.userService.getUserInfos());
         if (data)
           this.user = data;
-          console.log(this.user);
         const data2 = await lastValueFrom(this.tacheService.getListes(this.user));
         if (data2)
           this.liste2 = data2;

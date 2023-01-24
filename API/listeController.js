@@ -69,5 +69,4 @@ exports.listePut = async function (req, res) {
         console.log(err);
         res.status(500).json({ message: err })
     }
-    db.close();
 };

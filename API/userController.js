@@ -19,7 +19,6 @@ exports.UserInfo = async function (req, res) {
 }
 
 exports.userPut = async function (req, res) {
-    console.log(req.body);
     try {
         if (req.session.user.id == req.params.id) {
             db = await MongoClient.connect(url);

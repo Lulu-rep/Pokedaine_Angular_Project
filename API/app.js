@@ -27,7 +27,6 @@ app.use(session({
 
 
 function checkSignIn(req, res, next) {
-    console.log(req.session.user);
     if (req.session.user) {
         next(); //Si la session exist on passe au handler normal.
     } else {
