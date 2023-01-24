@@ -23,5 +23,8 @@ export class LoginComponent {
         error: () => { this.error = true; }
       });
   }
+  redirect():void {
+    this.router.navigate(['register']);
+  }
 
 }
